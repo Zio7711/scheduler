@@ -26,7 +26,7 @@ storiesOf("Button", module)
 
   storiesOf("DayListItem", module) 
   .addParameters({
-    backgrounds: [{ name: "dark", value: "#aaa", default: true }]
+    backgrounds: [{ name: "dark", value: "#222f3e", default: true }]
   })
   .add("Unselected", () => <DayListItem name="Monday" spots={5} />) 
   .add("Selected", () => <DayListItem name="Monday" spots={5} selected />) 
