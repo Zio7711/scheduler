@@ -4,8 +4,9 @@ export function getAppointmentsForDay(state, day) {
   if (state.days.length === 0 || filteredDay.length === 0) {
     return [];
   }
-  return filteredDay[0].appointments.map((apponitmentNum) => {
-    return state.appointments[apponitmentNum];
+  return filteredDay[0].appointments.map((appointmentNum) => {
+    return state.appointments[appointmentNum];
   });
 }
+
 
