@@ -24,6 +24,7 @@ const Application = (props) => {
 
   //get appointments for a specific day
   const dailyAppointments = getAppointmentsForDay(state, state.day);
+  console.log('dailyAppointments---->', dailyAppointments);
 
   const bookInterview = (id, interview) => {
     const appointment = {
@@ -36,14 +37,37 @@ const Application = (props) => {
       [id]: appointment,
     };
 
-    setState((prev) => ({
-      ...prev,
-      appointments,
-    }));
+    return axios
+      .put(`http://localhost:8001/api/appointments/${id}`, {
+        interview,
+      })
+      .then(() => {
+        setState((prev) => ({
+          ...prev,
+          appointments,
+        }));
+      });
+  };
 
-    return axios.put(`http://localhost:8001/api/appointments/${id}`, {
-      interview,
-    });
+  const cancelInterview = (id) => {
+    const appointment = {
+      ...state.appointments[id],
+      interview: {},
+    };
+
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment,
+    };
+
+    return axios
+      .delete(`http://localhost:8001/api/appointments/${id}`)
+      .then(() => {
+        setState({
+          ...state,
+          appointments,
+        });
+      });
   };
 
   //loop over each appointment to pass state and props to Appointment component
@@ -59,6 +83,7 @@ const Application = (props) => {
         interview={interview}
         interviewers={dailyInterviewers}
         bookInterview={bookInterview}
+        cancelInterview={cancelInterview}
       />
     );
   });
@@ -84,6 +109,11 @@ const Application = (props) => {
       }));
     });
   }, []);
+
+  for (const key in state) {
+    console.log(key);
+  }
+  console.log(state);
 
   return (
     <main className="layout">
