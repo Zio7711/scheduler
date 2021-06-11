@@ -10,19 +10,45 @@ import {
 import 'components/Application.scss';
 import axios from 'axios';
 
-export default function Application(props) {
+const Application = (props) => {
+  //state object
   const [state, setState] = useState({
     day: 'Monday',
     days: [],
     appointments: {},
     interviewers: {},
   });
+
+  //create setDay function as a setter
+  const setDay = (day) => setState({ ...state, day });
+
+  //get appointments for a specific day
   const dailyAppointments = getAppointmentsForDay(state, state.day);
 
-  const setDay = (day) => setState({ ...state, day });
-  // const setDays = days => setState(prev => ({ ...prev, days }));
+  const bookInterview = (id, interview) => {
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview },
+    };
 
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment,
+    };
+
+    setState((prev) => ({
+      ...prev,
+      appointments,
+    }));
+
+    return axios.put(`http://localhost:8001/api/appointments/${id}`, {
+      interview,
+    });
+  };
+
+  //loop over each appointment to pass state and props to Appointment component
   const Appointments = dailyAppointments.map((appointment) => {
+    //get interview and interviewers for that specific day and appointment
     const interview = getInterview(state, appointment.interview);
     const dailyInterviewers = getInterviewersForDay(state, state.day);
     return (
@@ -32,10 +58,12 @@ export default function Application(props) {
         time={appointment.time}
         interview={interview}
         interviewers={dailyInterviewers}
+        bookInterview={bookInterview}
       />
     );
   });
 
+  //useEffect hook to get data from the api
   useEffect(() => {
     const getDaysURL = 'http://localhost:8001/api/days';
     const getAppointmentsURL = 'http://localhost:8001/api/appointments';
@@ -47,7 +75,7 @@ export default function Application(props) {
       axios.get(getInterviewersURL),
     ]).then((all) => {
       const [days, appointments, interviewers] = all;
-      // console.log(interviewers.data);
+      //create setters for states
       setState((prev) => ({
         ...prev,
         days: days.data,
@@ -56,7 +84,6 @@ export default function Application(props) {
       }));
     });
   }, []);
-  // console.log('state.interviewers', state.interviewers);
 
   return (
     <main className="layout">
@@ -83,4 +110,6 @@ export default function Application(props) {
       </section>
     </main>
   );
-}
+};
+
+export default Application;
