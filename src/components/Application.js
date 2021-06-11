@@ -24,7 +24,6 @@ const Application = (props) => {
 
   //get appointments for a specific day
   const dailyAppointments = getAppointmentsForDay(state, state.day);
-  console.log('dailyAppointments---->', dailyAppointments);
 
   const bookInterview = (id, interview) => {
     const appointment = {
@@ -52,7 +51,7 @@ const Application = (props) => {
   const cancelInterview = (id) => {
     const appointment = {
       ...state.appointments[id],
-      interview: {},
+      interview: null,
     };
 
     const appointments = {
@@ -109,11 +108,6 @@ const Application = (props) => {
       }));
     });
   }, []);
-
-  for (const key in state) {
-    console.log(key);
-  }
-  console.log(state);
 
   return (
     <main className="layout">
