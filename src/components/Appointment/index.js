@@ -50,7 +50,10 @@ const Appointment = (props) => {
       .then(() => {
         transition(EMPTY);
       })
-      .catch(() => transition(ERROR_DELETE, true));
+      .catch((err) => {
+        console.log(err);
+        transition(ERROR_DELETE, true);
+      });
   };
 
   return (
