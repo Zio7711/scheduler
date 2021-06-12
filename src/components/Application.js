@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import DayList from './DayList';
 import Appointment from './Appointment';
 import {
@@ -8,72 +8,20 @@ import {
 } from 'helpers/selectors';
 
 import 'components/Application.scss';
-import axios from 'axios';
+import useApplicationData from 'hooks/useApplicationData';
 
-const Application = (props) => {
-  //state object
-  const [state, setState] = useState({
-    day: 'Monday',
-    days: [],
-    appointments: {},
-    interviewers: {},
-  });
-
-  //create setDay function as a setter
-  const setDay = (day) => setState({ ...state, day });
+const Application = () => {
+  const { state, setDay, bookInterview, cancelInterview } =
+    useApplicationData();
 
   //get appointments for a specific day
   const dailyAppointments = getAppointmentsForDay(state, state.day);
-
-  const bookInterview = (id, interview) => {
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview },
-    };
-
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment,
-    };
-
-    return axios
-      .put(`http://localhost:8001/api/appointments/${id}`, {
-        interview,
-      })
-      .then(() => {
-        setState((prev) => ({
-          ...prev,
-          appointments,
-        }));
-      });
-  };
-
-  const cancelInterview = (id) => {
-    const appointment = {
-      ...state.appointments[id],
-      interview: null,
-    };
-
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment,
-    };
-
-    return axios
-      .delete(`http://localhost:8001/api/appointments/${id}`)
-      .then(() => {
-        setState({
-          ...state,
-          appointments,
-        });
-      });
-  };
+  const dailyInterviewers = getInterviewersForDay(state, state.day);
 
   //loop over each appointment to pass state and props to Appointment component
   const Appointments = dailyAppointments.map((appointment) => {
     //get interview and interviewers for that specific day and appointment
     const interview = getInterview(state, appointment.interview);
-    const dailyInterviewers = getInterviewersForDay(state, state.day);
     return (
       <Appointment
         key={appointment.id}
@@ -86,28 +34,6 @@ const Application = (props) => {
       />
     );
   });
-
-  //useEffect hook to get data from the api
-  useEffect(() => {
-    const getDaysURL = 'http://localhost:8001/api/days';
-    const getAppointmentsURL = 'http://localhost:8001/api/appointments';
-    const getInterviewersURL = 'http://localhost:8001/api/interviewers';
-
-    Promise.all([
-      axios.get(getDaysURL),
-      axios.get(getAppointmentsURL),
-      axios.get(getInterviewersURL),
-    ]).then((all) => {
-      const [days, appointments, interviewers] = all;
-      //create setters for states
-      setState((prev) => ({
-        ...prev,
-        days: days.data,
-        appointments: appointments.data,
-        interviewers: interviewers.data,
-      }));
-    });
-  }, []);
 
   return (
     <main className="layout">

@@ -9,7 +9,7 @@ const useVisualMode = (initial) => {
       setMode(newMode);
     } else {
       setMode(newMode);
-      setHistory([...history, newMode]);
+      setHistory((prev) => [...prev, newMode]);
     }
   };
 
