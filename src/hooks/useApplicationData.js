@@ -1,15 +1,65 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer } from 'react';
 
 const useApplicationData = () => {
-  const [state, setState] = useState({
+  //replace useState hook with useReducer hook
+  const SET_DAY = 'SET_DAY';
+  const SET_APPLICATION_DATA = 'SET_APPLICATION_DATA';
+  const SET_INTERVIEW = 'SET_INTERVIEW';
+  const SET_SPOT = 'SET_SPOT';
+
+  function reducer(state, action) {
+    switch (action.type) {
+      case SET_DAY:
+        return {
+          ...state,
+          day: action.day,
+        };
+
+      case SET_APPLICATION_DATA:
+        return {
+          ...state,
+          days: action.days,
+          appointments: action.appointments,
+          interviewers: action.interviewers,
+        };
+
+      case SET_INTERVIEW: {
+        return {
+          ...state,
+          appointments: {
+            ...state.appointments,
+            [action.id]: {
+              ...state.appointments[action.id],
+              interview: action.interview,
+            },
+          },
+        };
+      }
+
+      case SET_SPOT: {
+        return {
+          ...state,
+          days: action.updatedDays,
+        };
+      }
+
+      default:
+        throw new Error(
+          `Tried to reduce with unsupported action type: ${action.type}`
+        );
+    }
+  }
+
+  const [state, dispatch] = useReducer(reducer, {
     day: 'Monday',
     days: [],
     appointments: {},
     interviewers: {},
   });
 
-  const setDay = (day) => setState({ ...state, day });
+  // const setDay = (day) => setState({ ...state, day });
+  const setDay = (day) => dispatch({ type: SET_DAY, day: day });
 
   //useEffect hook to get data from the api
   useEffect(() => {
@@ -24,35 +74,22 @@ const useApplicationData = () => {
     ]).then((all) => {
       const [days, appointments, interviewers] = all;
       //create setters for states
-      setState((prev) => ({
-        ...prev,
+      dispatch({
+        type: SET_APPLICATION_DATA,
         days: days.data,
         appointments: appointments.data,
         interviewers: interviewers.data,
-      }));
+      });
     });
   }, []);
-  // console.log('state', state);
+
   const bookInterview = (id, interview) => {
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview },
-    };
-
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment,
-    };
-
     return axios
       .put(`http://localhost:8001/api/appointments/${id}`, {
         interview,
       })
       .then(() => {
-        setState((prev) => ({
-          ...prev,
-          appointments,
-        }));
+        dispatch({ type: SET_INTERVIEW, id, interview });
       })
       .then(() => {
         const filteredDay = state.days.filter((el) => {
@@ -74,41 +111,25 @@ const useApplicationData = () => {
           ...state.days.slice(daysToUpdateIndex + 1),
         ];
 
-        setState((prev) => ({
-          ...prev,
-          days: updatedDays,
-        }));
+        dispatch({ type: SET_SPOT, updatedDays });
       });
   };
 
   const cancelInterview = (id) => {
-    const appointment = {
-      ...state.appointments[id],
-      interview: null,
-    };
-
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment,
-    };
-
     return axios
       .delete(`http://localhost:8001/api/appointments/${id}`)
       .then(() => {
-        setState({
-          ...state,
-          appointments,
-        });
+        dispatch({ type: SET_INTERVIEW, id, interview: null });
       })
       .then(() => {
         const filteredDay = state.days.filter((el) => {
           return el.name === state.day;
         });
-
         const updatedDay = {
           ...filteredDay[0],
           spots: filteredDay[0].spots + 1,
         };
+
         const daysToUpdateIndex = state.days.findIndex(
           (days) => days.name === state.day
         );
@@ -119,10 +140,7 @@ const useApplicationData = () => {
           ...state.days.slice(daysToUpdateIndex + 1),
         ];
 
-        setState((prev) => ({
-          ...prev,
-          days: updatedDays,
-        }));
+        dispatch({ type: SET_SPOT, updatedDays });
       });
   };
 
