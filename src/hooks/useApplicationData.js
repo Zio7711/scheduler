@@ -6,7 +6,6 @@ const useApplicationData = () => {
   const SET_DAY = 'SET_DAY';
   const SET_APPLICATION_DATA = 'SET_APPLICATION_DATA';
   const SET_INTERVIEW = 'SET_INTERVIEW';
-  const SET_SPOT = 'SET_SPOT';
 
   function reducer(state, action) {
     switch (action.type) {
@@ -25,7 +24,17 @@ const useApplicationData = () => {
         };
 
       case SET_INTERVIEW: {
-        return {
+        const getSpots = (state, day) => {
+          return state.days
+            .find((stateDay) => stateDay.name === day)
+            .appointments.reduce((spotsNum, appointmentsNum) => {
+              return state.appointments[appointmentsNum].interview
+                ? spotsNum
+                : spotsNum + 1;
+            }, 0);
+        };
+
+        const updatedState = {
           ...state,
           appointments: {
             ...state.appointments,
@@ -35,12 +44,15 @@ const useApplicationData = () => {
             },
           },
         };
-      }
 
-      case SET_SPOT: {
         return {
-          ...state,
-          days: action.updatedDays,
+          ...updatedState,
+          days: state.days.map((day) => {
+            return {
+              ...day,
+              spots: getSpots(updatedState, day.name),
+            };
+          }),
         };
       }
 
@@ -85,13 +97,10 @@ const useApplicationData = () => {
     const schedularSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
     schedularSocket.onopen = function (event) {
       schedularSocket.send('ping');
-      console.log('WebSocket Open');
     };
     schedularSocket.onmessage = (event) => {
-      console.log(event.data);
       const appointmentData = JSON.parse(event.data);
       if (appointmentData.type === 'SET_INTERVIEW') {
-        console.log('appointmentData', appointmentData.interview);
         dispatch({
           type: SET_INTERVIEW,
           id: appointmentData.id,
@@ -101,27 +110,6 @@ const useApplicationData = () => {
     };
   }, []);
 
-  /*   //useEffect hook to connect to websocket
-  useEffect(() => {
-    const schedularSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
-    schedularSocket.onopen = function (event) {
-      schedularSocket.send('ping');
-      console.log('WebSocket Open');
-    };
-    schedularSocket.onmessage = (event) => {
-      console.log(event.data);
-      const appointmentData = JSON.parse(event.data);
-      console.log('appointmentData', appointmentData.type);
-      if (appointmentData.type === 'SET_INTERVIEW') {
-        dispatch({
-          type: SET_INTERVIEW,
-          id: appointmentData.id,
-          interview: appointmentData.interview,
-        });
-      }
-    };
-  }, []); */
-
   const bookInterview = (id, interview) => {
     return axios
       .put(`http://localhost:8001/api/appointments/${id}`, {
@@ -129,28 +117,6 @@ const useApplicationData = () => {
       })
       .then(() => {
         dispatch({ type: SET_INTERVIEW, id, interview });
-      })
-      .then(() => {
-        const filteredDay = state.days.filter((el) => {
-          return el.name === state.day;
-        });
-
-        const updatedDay = {
-          ...filteredDay[0],
-          spots: filteredDay[0].spots - 1,
-        };
-
-        const daysToUpdateIndex = state.days.findIndex(
-          (days) => days.name === state.day
-        );
-
-        const updatedDays = [
-          ...state.days.slice(0, daysToUpdateIndex),
-          updatedDay,
-          ...state.days.slice(daysToUpdateIndex + 1),
-        ];
-
-        dispatch({ type: SET_SPOT, updatedDays });
       });
   };
 
@@ -159,27 +125,6 @@ const useApplicationData = () => {
       .delete(`http://localhost:8001/api/appointments/${id}`)
       .then(() => {
         dispatch({ type: SET_INTERVIEW, id, interview: null });
-      })
-      .then(() => {
-        const filteredDay = state.days.filter((el) => {
-          return el.name === state.day;
-        });
-        const updatedDay = {
-          ...filteredDay[0],
-          spots: filteredDay[0].spots + 1,
-        };
-
-        const daysToUpdateIndex = state.days.findIndex(
-          (days) => days.name === state.day
-        );
-
-        const updatedDays = [
-          ...state.days.slice(0, daysToUpdateIndex),
-          updatedDay,
-          ...state.days.slice(daysToUpdateIndex + 1),
-        ];
-
-        dispatch({ type: SET_SPOT, updatedDays });
       });
   };
 
