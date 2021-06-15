@@ -81,7 +81,46 @@ const useApplicationData = () => {
         interviewers: interviewers.data,
       });
     });
+
+    const schedularSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+    schedularSocket.onopen = function (event) {
+      schedularSocket.send('ping');
+      console.log('WebSocket Open');
+    };
+    schedularSocket.onmessage = (event) => {
+      console.log(event.data);
+      const appointmentData = JSON.parse(event.data);
+      if (appointmentData.type === 'SET_INTERVIEW') {
+        console.log('appointmentData', appointmentData.interview);
+        dispatch({
+          type: SET_INTERVIEW,
+          id: appointmentData.id,
+          interview: appointmentData.interview,
+        });
+      }
+    };
   }, []);
+
+  /*   //useEffect hook to connect to websocket
+  useEffect(() => {
+    const schedularSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+    schedularSocket.onopen = function (event) {
+      schedularSocket.send('ping');
+      console.log('WebSocket Open');
+    };
+    schedularSocket.onmessage = (event) => {
+      console.log(event.data);
+      const appointmentData = JSON.parse(event.data);
+      console.log('appointmentData', appointmentData.type);
+      if (appointmentData.type === 'SET_INTERVIEW') {
+        dispatch({
+          type: SET_INTERVIEW,
+          id: appointmentData.id,
+          interview: appointmentData.interview,
+        });
+      }
+    };
+  }, []); */
 
   const bookInterview = (id, interview) => {
     return axios
