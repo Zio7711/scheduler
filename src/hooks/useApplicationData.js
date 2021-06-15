@@ -75,9 +75,9 @@ const useApplicationData = () => {
 
   //useEffect hook to get data from the api
   useEffect(() => {
-    const getDaysURL = 'http://localhost:8001/api/days';
-    const getAppointmentsURL = 'http://localhost:8001/api/appointments';
-    const getInterviewersURL = 'http://localhost:8001/api/interviewers';
+    const getDaysURL = '/api/days';
+    const getAppointmentsURL = '/api/appointments';
+    const getInterviewersURL = '/api/interviewers';
 
     Promise.all([
       axios.get(getDaysURL),
@@ -94,8 +94,9 @@ const useApplicationData = () => {
       });
     });
 
-    const schedularSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
-    schedularSocket.onopen = function (event) {
+    // const schedularSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+    const schedularSocket = new WebSocket('ws://localhost:8001');
+    schedularSocket.onopen = function () {
       schedularSocket.send('ping');
     };
     schedularSocket.onmessage = (event) => {

@@ -7,10 +7,6 @@ import { render } from '@testing-library/react';
 import Appointment from '../Appointment/index';
 
 describe('Appointment', () => {
-  it('renders without crashing', () => {
-    render(<Appointment />);
-  });
-
   it("doesn't call the function", () => {
     const fn = jest.fn();
     expect(fn).toHaveBeenCalledTimes(0);
