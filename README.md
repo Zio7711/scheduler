@@ -54,17 +54,26 @@ npm run storybook
 - Prop-types
 - React-test-renderer
 
+### Technical Specifications
+
+- React
+- Webpack, Babel
+- Axios, WebSockets
+- Axios
+- Storybook, Webpack Dev Server, Jest, Testing Library
+
 ### Main Page
 
-!['Main page']()
-\_\_
+!['Main page'](https://github.com/Zio7711/scheduler/blob/master/docs/mainPage.png?raw=true)
+_Interviews can be booked between Monday and Friday._
+_A user can switch between weekdays._
 
 ### Creating an appointment
 
-!['book-new-apt']()
-\_\_
+!['book-new-apt'](https://raw.githubusercontent.com/Zio7711/scheduler/master/docs/Form.png)
+_A user can book an interview in an empty appointment slot._
 
 ### Deleting an appointment
 
-!['cancel-apt-confirm-delete']()
-\_\_
+!['cancel-apt-confirm-delete'](https://github.com/Zio7711/scheduler/blob/master/docs/deletePage.png?raw=true)
+_A user can cancel an existing interview._
