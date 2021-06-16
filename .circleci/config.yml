@@ -31,9 +31,9 @@ deploy:
           - "59:74:f0:ef:33:ef:e1:75:4d:9b:a4:5a:fe:2e:26:a2"
     - checkout
     - run:
-        name: Push Master to circleci-project-setup
+        name: Push Master to production
         command: |
-          git push https://github.com/lighthouse-labs/scheduler.git master:circleci-project-setup
+          git push https://github.com/lighthouse-labs/scheduler.git master:production
 
 workflows:
   version: 2
@@ -42,10 +42,10 @@ workflows:
       - build:
           filters:
             branches:
-              ignore: circleci-project-setup
+              ignore: production
       - deploy:
           filters:
             branches:
-              ignore: circleci-project-setup
+              ignore: production
           requires:
             - build
