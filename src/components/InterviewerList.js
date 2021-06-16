@@ -4,6 +4,7 @@ import './InterviewerList.scss';
 import PropTypes from 'prop-types';
 
 const InterviewerList = (props) => {
+  //loop over to map each list items
   const InterviewerListItems = props.interviewers.map((interviewerItem) => {
     return (
       <InterviewerListItem

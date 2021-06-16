@@ -37,8 +37,7 @@ const Appointment = (props) => {
       .then(() => {
         transition(SHOW);
       })
-      .catch((err) => {
-        console.log('Something wrong with book interview!', err);
+      .catch(() => {
         transition(ERROR_SAVE, true);
       });
   };
@@ -50,8 +49,7 @@ const Appointment = (props) => {
       .then(() => {
         transition(EMPTY);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         transition(ERROR_DELETE, true);
       });
   };

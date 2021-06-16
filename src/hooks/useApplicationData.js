@@ -7,6 +7,7 @@ import reducer, {
 } from 'reducers/application';
 
 const useApplicationData = () => {
+  //setup useReducer hook
   const [state, dispatch] = useReducer(reducer, {
     day: 'Monday',
     days: [],
@@ -55,6 +56,7 @@ const useApplicationData = () => {
     };
   }, []);
 
+  //function to book an interview
   const bookInterview = (id, interview) => {
     return axios
       .put(`http://localhost:8001/api/appointments/${id}`, {
@@ -65,10 +67,12 @@ const useApplicationData = () => {
       });
   };
 
+  //function to delete an appointment
   const cancelInterview = (id) => {
     return axios
       .delete(`http://localhost:8001/api/appointments/${id}`)
       .then(() => {
+        //update interview
         dispatch({ type: SET_INTERVIEW, id, interview: null });
       });
   };

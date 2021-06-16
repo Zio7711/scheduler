@@ -2,6 +2,7 @@ export const SET_DAY = 'SET_DAY';
 export const SET_APPLICATION_DATA = 'SET_APPLICATION_DATA';
 export const SET_INTERVIEW = 'SET_INTERVIEW';
 
+//create reducer function for useReducer hook
 const reducer = (state, action) => {
   switch (action.type) {
     case SET_DAY:
@@ -29,6 +30,7 @@ const reducer = (state, action) => {
           }, 0);
       };
 
+      //update interview
       const updatedState = {
         ...state,
         appointments: {
@@ -44,6 +46,7 @@ const reducer = (state, action) => {
         ...updatedState,
         days: state.days.map((day) => {
           return {
+            //update spots
             ...day,
             spots: getSpots(updatedState, day.name),
           };

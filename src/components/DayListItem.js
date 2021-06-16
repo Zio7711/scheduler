@@ -3,11 +3,13 @@ import './DayListItem.scss';
 const classNames = require('classnames');
 
 export default function DayListItem(props) {
+  //assign class for different conditions
   let dayClass = classNames('day-list__item', {
     'day-list__item--selected': props.selected,
     'day-list__item--full': props.spots === 0,
   });
 
+  //function to display spot information in a semantic way
   const formatSpots = (spots) => {
     if (spots === 0) {
       return 'no spots remaining';
