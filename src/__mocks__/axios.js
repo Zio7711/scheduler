@@ -83,6 +83,7 @@ export default {
     }
   }),
 
+  //mock put router
   put: jest.fn(() => {
     return Promise.resolve({
       status: 204,
@@ -90,6 +91,7 @@ export default {
     });
   }),
 
+  //mock delete router
   delete: jest.fn(() => {
     return Promise.resolve({
       status: 204,
