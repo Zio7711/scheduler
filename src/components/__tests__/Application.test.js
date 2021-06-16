@@ -124,7 +124,7 @@ describe('Application', () => {
     //1. receive error msg from axios.put
     axios.put.mockRejectedValueOnce();
     //2. render the application
-    const { container, debug } = render(<Application />);
+    const { container } = render(<Application />);
     //3. Wait until the text "Archie Cohen" is displayed.
     await waitForElement(() => getByText(container, 'Archie Cohen'));
     const appointments = getAllByTestId(container, 'appointment');
