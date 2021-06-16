@@ -11,6 +11,8 @@ import {
   getByPlaceholderText,
   queryByText,
   prettyDOM,
+  debugDOM,
+  getByTestId,
 } from '@testing-library/react';
 
 import Application from 'components/Application';
@@ -60,6 +62,9 @@ describe('Application', () => {
 
     // 3. Click the "delete" button on the first booked appointment.
     fireEvent.click(getByAltText(appointment, 'Delete'));
+    expect(
+      getByText(appointment, 'Are you sure you would like to delete?')
+    ).toBeInTheDocument();
 
     // 4. Click confirm button to drop an appointment
     fireEvent.click(getByText(appointment, 'Confirm'));
@@ -76,5 +81,38 @@ describe('Application', () => {
     );
 
     expect(getByText(day, '2 spots remaining')).toBeInTheDocument();
+  });
+
+  it('loads data, edits an interview and keeps the spots remaining for Monday the same', async () => {
+    // 1. Render the Application.
+    const { container, debug } = render(<Application />);
+    // 2. Wait until the text "Archie Cohen" is displayed.
+    await waitForElement(() => getByText(container, 'Archie Cohen'));
+    const appointments = getAllByTestId(container, 'appointment');
+    const appointment = appointments[1];
+    // 3. Click the "Edit" button on the booked appointment.
+    fireEvent.click(getByAltText(appointment, 'Edit'));
+    // 4. Check that the form is shown.
+    expect(getByTestId(appointment, 'student-name-input')).toBeInTheDocument();
+    // 5. Change interviewer and student name
+    fireEvent.change(getByTestId(appointment, 'student-name-input'), {
+      target: { value: 'Zio' },
+    });
+
+    fireEvent.click(getByAltText(appointment, 'Sylvia Palmer'));
+
+    // 6. click save button
+    fireEvent.click(getByText(appointment, 'Save'));
+    // 7. Check saving is displaying
+    expect(getByText(appointment, 'SAVING')).toBeInTheDocument();
+
+    // 8. Wait until the element shows Student name as Zio;
+    await waitForElement(() => getByText(appointment, 'Zio'));
+    // 9. Check that the DayListItem with the text "Monday" also has the text "1 spots remaining".
+    const day = getAllByTestId(container, 'day').find((day) =>
+      queryByText(day, 'Monday')
+    );
+
+    expect(getByText(day, '1 spot remaining')).toBeInTheDocument();
   });
 });
