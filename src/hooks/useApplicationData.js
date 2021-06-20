@@ -39,8 +39,8 @@ const useApplicationData = () => {
       });
     });
 
-    // const schedularSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
-    const schedularSocket = new WebSocket('ws://localhost:8001');
+    const schedularSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+    // const schedularSocket = new WebSocket('ws://localhost:8001');
     schedularSocket.onopen = function () {
       schedularSocket.send('ping');
     };
@@ -59,7 +59,7 @@ const useApplicationData = () => {
   //function to book an interview
   const bookInterview = (id, interview) => {
     return axios
-      .put(`http://localhost:8001/api/appointments/${id}`, {
+      .put(`/api/appointments/${id}`, {
         interview,
       })
       .then(() => {
@@ -69,12 +69,10 @@ const useApplicationData = () => {
 
   //function to delete an appointment
   const cancelInterview = (id) => {
-    return axios
-      .delete(`http://localhost:8001/api/appointments/${id}`)
-      .then(() => {
-        //update interview
-        dispatch({ type: SET_INTERVIEW, id, interview: null });
-      });
+    return axios.delete(`/api/appointments/${id}`).then(() => {
+      //update interview
+      dispatch({ type: SET_INTERVIEW, id, interview: null });
+    });
   };
 
   return { state, setDay, bookInterview, cancelInterview };
