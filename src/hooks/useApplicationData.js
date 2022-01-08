@@ -39,21 +39,21 @@ const useApplicationData = () => {
       });
     });
 
-    const schedularSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
-    // const schedularSocket = new WebSocket('ws://localhost:8001');
-    schedularSocket.onopen = function () {
-      schedularSocket.send('ping');
-    };
-    schedularSocket.onmessage = (event) => {
-      const appointmentData = JSON.parse(event.data);
-      if (appointmentData.type === 'SET_INTERVIEW') {
-        dispatch({
-          type: SET_INTERVIEW,
-          id: appointmentData.id,
-          interview: appointmentData.interview,
-        });
-      }
-    };
+    // const schedularSocket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+    // // const schedularSocket = new WebSocket('ws://localhost:8001');
+    // schedularSocket.onopen = function () {
+    //   schedularSocket.send('ping');
+    // };
+    // schedularSocket.onmessage = (event) => {
+    //   const appointmentData = JSON.parse(event.data);
+    //   if (appointmentData.type === 'SET_INTERVIEW') {
+    //     dispatch({
+    //       type: SET_INTERVIEW,
+    //       id: appointmentData.id,
+    //       interview: appointmentData.interview,
+    //     });
+    //   }
+    // };
   }, []);
 
   //function to book an interview
