@@ -56,5 +56,5 @@
       "!src/index.js"
     ]
   },
-  "proxy": "http://localhost:8001"
+  "proxy": "https://zio-scheduler.herokuapp.com"
 }
