@@ -20,9 +20,11 @@ const useApplicationData = () => {
 
   //useEffect hook to get data from the api
   useEffect(() => {
-    const getDaysURL = '/api/days';
-    const getAppointmentsURL = '/api/appointments';
-    const getInterviewersURL = '/api/interviewers';
+    const getDaysURL = 'https://zio-scheduler.herokuapp.com/api/days';
+    const getAppointmentsURL =
+      'https://zio-scheduler.herokuapp.com/api/appointments';
+    const getInterviewersURL =
+      'https://zio-scheduler.herokuapp.com/api/interviewers';
 
     Promise.all([
       axios.get(getDaysURL),
@@ -59,7 +61,7 @@ const useApplicationData = () => {
   //function to book an interview
   const bookInterview = (id, interview) => {
     return axios
-      .put(`/api/appointments/${id}`, {
+      .put(`https://zio-scheduler.herokuapp.com/api/appointments/${id}`, {
         interview,
       })
       .then(() => {
@@ -69,10 +71,12 @@ const useApplicationData = () => {
 
   //function to delete an appointment
   const cancelInterview = (id) => {
-    return axios.delete(`/api/appointments/${id}`).then(() => {
-      //update interview
-      dispatch({ type: SET_INTERVIEW, id, interview: null });
-    });
+    return axios
+      .delete(`https://zio-scheduler.herokuapp.com/api/appointments/${id}`)
+      .then(() => {
+        //update interview
+        dispatch({ type: SET_INTERVIEW, id, interview: null });
+      });
   };
 
   return { state, setDay, bookInterview, cancelInterview };
