@@ -9,6 +9,7 @@ import {
 
 import 'components/Application.scss';
 import useApplicationData from 'hooks/useApplicationData';
+import Loading from './Loading';
 
 const Application = () => {
   const { state, setDay, bookInterview, cancelInterview } =
@@ -62,7 +63,7 @@ const Application = () => {
           </section>
         </main>
       ) : (
-        <div>Loading</div>
+        <Loading />
       )}
     </>
   );
