@@ -2,7 +2,7 @@ import React from 'react';
 import './Loading.scss';
 
 function Loading() {
-  const warning = false;
+  let warning = false;
   setTimeout(() => {
     warning = true;
   }, 5000);
