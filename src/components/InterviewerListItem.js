@@ -7,20 +7,13 @@ export default function DayListItem(props) {
     'interviewers__item--selected': props.selected,
   });
 
-  let imgClass = classNames("interviewers__item-image", {
-    "interviewers__item--selected-image": props.selected,
-  })
+  let imgClass = classNames('interviewers__item-image', {
+    'interviewers__item--selected-image': props.selected,
+  });
 
   return (
-    <li
-      className={interviewerClass}
-      onClick={props.setInterviewer}
-    >
-      <img
-        className={imgClass}
-        src={props.avatar}
-        alt={props.name}
-      />
+    <li className={interviewerClass} onClick={props.setInterviewer}>
+      <img className={imgClass} src={props.avatar} alt={props.name} />
       {props.selected && props.name}
     </li>
   );

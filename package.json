@@ -9,6 +9,7 @@
     "prop-types": "^15.8.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "react-load-image": "^0.1.7",
     "react-scripts": "3.0.0"
   },
   "scripts": {
